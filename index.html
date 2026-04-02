@@ -14,6 +14,12 @@ html, body {
   font-family: Arial, sans-serif;
 }
 
+/* WRAPPER SCALE */
+#scale {
+  transform: scale(2);
+  transform-origin: top left;
+}
+
 /* CONTAINER */
 #bar {
   display: inline-flex;
@@ -72,11 +78,13 @@ html, body {
 
 <body>
 
-<div id="bar">
-  <div class="label">LAST LARGE EARTHQUAKE</div>
-  <div class="mag" id="mag">--</div>
-  <div class="place" id="place">Loading...</div>
-  <div class="time" id="time">--</div>
+<div id="scale">
+  <div id="bar">
+    <div class="label">LAST LARGE EARTHQUAKE</div>
+    <div class="mag" id="mag">--</div>
+    <div class="place" id="place">Loading...</div>
+    <div class="time" id="time">--</div>
+  </div>
 </div>
 
 <script>
@@ -84,7 +92,6 @@ const API_URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_d
 
 let quakeTime = null;
 
-/* FORMAT TIME AGO */
 function formatTimeAgo(ms) {
   let sec = Math.floor(ms / 1000);
   let min = Math.floor(sec / 60);
@@ -95,7 +102,6 @@ function formatTimeAgo(ms) {
   return sec + "s ago";
 }
 
-/* LOAD DATA */
 function loadData() {
   fetch(API_URL)
     .then(r => r.json())
@@ -103,7 +109,6 @@ function loadData() {
 
       if (!data.features) return;
 
-      /* FIND FIRST ≥5 */
       let quake = data.features.find(f => {
         let mag = f.properties.mag;
         return mag != null && mag >= 5;
@@ -124,7 +129,6 @@ function loadData() {
     .catch(err => console.log(err));
 }
 
-/* LIVE TIMER */
 function updateTimer() {
   if (!quakeTime) return;
 
@@ -134,11 +138,8 @@ function updateTimer() {
   document.getElementById("time").textContent = formatTimeAgo(diff);
 }
 
-/* INIT */
 loadData();
 setInterval(loadData, 60000);
-
-/* TIMER UPDATE každú sekundu */
 setInterval(updateTimer, 1000);
 </script>
 
